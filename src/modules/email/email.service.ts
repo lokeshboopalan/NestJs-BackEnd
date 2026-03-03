@@ -17,7 +17,6 @@ export class EmailService {
   });
 
   async sendOtpEmail(to: string, otp: string) {
-    console.log(this.transporter,'fkjndjknjngjkg')
     await this.transporter.sendMail({
       from: `"Support Team" <${process.env.EMAIL_USER}>`,
       to,

@@ -7,6 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { UserService } from '../user/user.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 import { EmailService } from '../email/email.service';
 
 @Injectable()
@@ -17,7 +19,7 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  async register(dto) {
+  async register(dto: RegisterDto) {
     const existing = await this.userService.findByEmail(dto.email);
 
     if (existing) throw new BadRequestException('Email already exists');
@@ -32,7 +34,7 @@ export class AuthService {
     return { message: 'User registered successfully', userId: user.id };
   }
 
-  async login(dto) {
+  async login(dto: LoginDto) {
     const user = await this.userService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
@@ -67,7 +69,6 @@ export class AuthService {
 
   async resetPassword(email: string,otp: string,newPassword: string) {
   const user = await this.userService.findByEmail(email);
-  console.log(user,'userjlkfnkj')
 
   if (!user || !user.resetOtp || !user.resetOtpExpiry) {
     throw new BadRequestException('Invalid request');

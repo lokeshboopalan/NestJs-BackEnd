@@ -14,53 +14,39 @@ export enum UserRole {
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number; // <-- add !
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column({
     type: 'enum',
     enum: UserRole,
     default: UserRole.USER,
   })
-  role: UserRole;
+  role!: UserRole;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
-@Column({
-  type: 'varchar',
-  nullable: true,
-})
-resetToken?: string | null;
+  @Column({ type: 'varchar', nullable: true })
+  resetToken?: string | null;
 
-@Column({
-  type: 'timestamp',
-  nullable: true,
-})
-resetTokenExpiry?: Date | null;
+  @Column({ type: 'timestamp', nullable: true })
+  resetTokenExpiry?: Date | null;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
-  @Column({
-  type: 'varchar',
-  length: 10,
-  nullable: true,
-})
-resetOtp?: string | null;
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  resetOtp?: string | null;
 
-@Column({
-  type: 'timestamp',
-  nullable: true,
-})
-resetOtpExpiry?: Date | null;
-
+  @Column({ type: 'timestamp', nullable: true })
+  resetOtpExpiry?: Date | null;
 }

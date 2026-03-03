@@ -11,7 +11,6 @@ export class AuthController {
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
-    console.log(dto,'kjfdnkjfngk')
     return this.authService.register(dto);
   }
 
@@ -21,9 +20,9 @@ export class AuthController {
   }
 
  @Post('forgot-password')
-forgotPassword(@Body('email') email: string) {
+ forgotPassword(@Body('email') email: string) {
   return this.authService.forgotPassword(email);
-}
+ }
 
 @Post('reset-password')
 resetPassword(
