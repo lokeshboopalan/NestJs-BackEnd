@@ -14,6 +14,9 @@ export class Category {
   @Column({ unique: true })
   name!: string; // ✅ add !
 
+  @Column({ type: 'text', nullable: true })
+  image?: string;
+
   @Column({ nullable: true })
   description?: string; // optional fields keep ?
 

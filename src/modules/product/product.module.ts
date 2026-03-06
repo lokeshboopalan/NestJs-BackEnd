@@ -10,7 +10,13 @@ import { SubCategory } from '../subcategory/entities/subcategory.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, ProductImage, ProductVariant, Category, SubCategory]),
+    TypeOrmModule.forFeature([
+      Product,
+      ProductImage,
+      ProductVariant,
+      Category,
+      SubCategory,
+    ]),
   ],
   providers: [ProductService],
   controllers: [ProductController],

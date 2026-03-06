@@ -14,12 +14,12 @@ import { EmailModule } from '../email/email.module';
     PassportModule,
     EmailModule,
     JwtModule.registerAsync({
-  inject: [ConfigService],
-  useFactory: (configService: ConfigService) => ({
-    secret: configService.get<string>('JWT_SECRET'),
-    signOptions: { expiresIn: '1d' },
-  }),
-}),
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+    }),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

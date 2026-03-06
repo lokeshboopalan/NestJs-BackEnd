@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { v2 as cloudinary } from 'cloudinary';
+import * as fs from 'fs';
 
 @Injectable()
 export class CategoryService {
@@ -12,7 +18,7 @@ export class CategoryService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto) {
+  async create(createCategoryDto: CreateCategoryDto, imagePath: string) {
     const existing = await this.categoryRepository.findOne({
       where: { name: createCategoryDto.name },
     });
@@ -21,10 +27,20 @@ export class CategoryService {
       throw new BadRequestException('Category already exists');
     }
 
-    const category = this.categoryRepository.create(createCategoryDto);
-    return this.categoryRepository.save(category);
-  }
+    const uploadResult = await cloudinary.uploader.upload(imagePath, {
+      folder: 'categories',
+    });
 
+    // remove local file
+    fs.unlinkSync(imagePath);
+
+    const category = this.categoryRepository.create({
+      ...createCategoryDto,
+      image: uploadResult.secure_url,
+    });
+
+    return await this.categoryRepository.save(category);
+  }
   async findAll() {
     return this.categoryRepository.find({
       order: { createdAt: 'DESC' },
@@ -44,7 +60,17 @@ export class CategoryService {
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    const category = await this.findOne(id);
+    if (!Object.keys(updateCategoryDto).length) {
+      throw new BadRequestException('No update values provided');
+    }
+
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
 
     Object.assign(category, updateCategoryDto);
 
